@@ -9,8 +9,8 @@
 ## 📊 GitHub Stats
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=ThoriqRohan&show_icons=true&theme=tokyonight" alt="Thoriq's GitHub stats" height="165" />
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=ThoriqRohan&theme=tokyonight" alt="Thoriq's GitHub streak" height="165" />
+  <img src="https://github-readme-stats.vercel.app/api?username=uwakmusang4-rgb&show_icons=true&theme=tokyonight" alt="Thoriq's GitHub stats" height="165" />
+  <img src="https://github-readme-streak-stats.herokuapp.com/?user=uwakmusang4-rgb&theme=tokyonight" alt="Thoriq's GitHub streak" height="165" />
 </p>
 
 ---
