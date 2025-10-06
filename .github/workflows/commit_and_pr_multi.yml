@@ -1,0 +1,67 @@
+name: Commit and PR Generator
+
+on:
+  workflow_dispatch:
+    inputs:
+      year:
+        description: "Tahun commit"
+        required: true
+        default: "2025"
+      total_commits:
+        description: "Jumlah total commit"
+        required: true
+        default: "100"
+      total_pr:
+        description: "Jumlah Pull Request"
+        required: true
+        default: "5"
+
+jobs:
+  commit_and_pr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Git config
+      run: |
+        git config user.name "RixzBot"
+        git config user.email "noreply@rixzbot.com"
+
+    - name: Generate commits and PRs
+      env:
+        YEAR: ${{ github.event.inputs.year }}
+        TOTAL_COMMITS: ${{ github.event.inputs.total_commits }}
+        TOTAL_PR: ${{ github.event.inputs.total_pr }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        COMMITS_PER_PR=$((TOTAL_COMMITS / TOTAL_PR))
+        echo "Each PR will have $COMMITS_PER_PR commits."
+
+        for p in $(seq 1 $TOTAL_PR); do
+          BRANCH="batch-${YEAR}-pr${p}"
+          git checkout -b "$BRANCH"
+
+          START=$(( (p - 1) * COMMITS_PER_PR + 1 ))
+          END=$(( p * COMMITS_PER_PR ))
+
+          for i in $(seq $START $END); do
+            echo "Commit $i for $YEAR (PR $p)" > "commit_${YEAR}_${p}_${i}.txt"
+            git add "commit_${YEAR}_${p}_${i}.txt"
+            git commit -m "Commit $i (PR $p) for $YEAR"
+          done
+
+          git push origin "$BRANCH"
+
+          gh pr create \
+            --title "PR $p for $YEAR" \
+            --body "Automatically generated PR number $p containing commits $START–$END for $YEAR." \
+            --base main \
+            --head "$BRANCH"
+
+          git checkout main
+        done
